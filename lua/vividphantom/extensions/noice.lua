@@ -6,7 +6,7 @@ local M = {}
 function M.get(opts, t)
     opts = opts or {}
     return {
-        NoiceFormatProgressDone = { fg = t.bg_alt, bg = t.cyan },
+        NoiceFormatProgressDone = { fg = t.bg_solid, bg = t.cyan },
         NoiceFormatProgressTodo = { fg = t.grey, bg = t.bg_highlight },
         NoiceLspProgressClient = { fg = t.blue },
         NoiceLspProgressSpinner = { fg = t.orange },

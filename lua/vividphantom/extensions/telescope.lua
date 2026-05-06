@@ -6,10 +6,10 @@ local M = {}
 function M.get(opts, t)
     opts = opts or {}
     local highlights = {
-        TelescopePreviewTitle = { fg = t.bg_alt, bg = t.green, bold = true },
+        TelescopePreviewTitle = { fg = t.bg_solid, bg = t.green, bold = true },
         TelescopePromptPrefix = { fg = t.blue, bg = t.bg_alt },
         TelescopePromptCounter = { fg = t.cyan, bg = t.bg_alt },
-        TelescopePromptTitle = { fg = t.bg_alt, bg = t.blue, bold = true },
+        TelescopePromptTitle = { fg = t.bg_solid, bg = t.blue, bold = true },
         TelescopeResultsTitle = { fg = t.blue, bg = t.bg_alt, bold = true },
         TelescopeSelection = { bg = t.bg_highlight },
         TelescopeMatching = { fg = t.cyan },

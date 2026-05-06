@@ -7,7 +7,7 @@ local M = {}
 function M.get(opts, t)
     opts = opts or {}
     return {
-        TreesitterContext = { bg = util.blend(t.bg, t.bg_highlight, 0.7) },
+        TreesitterContext = { bg = util.blend(t.bg_solid, t.bg_highlight, 0.7) },
         TreesitterContextLineNumber = { fg = util.blend(t.grey, t.bg_highlight, 0.8) },
     }
 end
