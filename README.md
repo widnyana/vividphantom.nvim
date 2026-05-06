@@ -4,6 +4,8 @@ Tritanopia-safe Neovim colorscheme. Based on [cyberdream.nvim](https://github.co
 
 The original cyberdream palette leans heavily on yellow/blue contrast, which collapses for people with tritanopia. vividphantom keeps the same dark, transparent aesthetic but swaps the discriminator pairs over to red/green/magenta/cyan so syntax categories stay visually distinct.
 
+A second palette is available for **protanopia / protanomaly** (red-green CVD, weak L cones) via `variant = "protan"`. See [Variants](#variants) below.
+
 ## Requirements
 
 - Neovim 0.9+
@@ -79,12 +81,56 @@ return {
 
 That's the whole minimum. Defaults are tuned to be reasonable; everything below is optional.
 
+## Variants
+
+vividphantom ships with two palettes, each tuned for a different color-vision profile:
+
+| variant   | tuned for                                       | default? |
+|-----------|-------------------------------------------------|:--------:|
+| `tritan`  | tritanopia / tritanomaly *(blue-yellow CVD)*    | yes      |
+| `protan`  | protanopia / protanomaly *(red-green CVD)*      |          |
+
+Pick one with the `variant` option:
+
+```lua
+require("vividphantom").setup({ variant = "protan" })
+```
+
+Or via `vim.g.vividphantom_opts`:
+
+```lua
+vim.g.vividphantom_opts = { variant = "protan" }
+```
+
+Both variants share the same structural settings (transparency, italic comments, extension toggles, etc.) — only the palette differs.
+
+### Why two?
+
+Different CVD types collapse different axes of color perception, so a single palette can't cover both well.
+
+- **Tritan** types lose the **blue–yellow** axis. The default palette compensates by leaning on red, green, magenta, cyan, and pink as the primary discriminators.
+- **Protan** types lose the **red–green** axis (weak L cones). Dark red can appear near-black, and red/orange/yellow/green collapse together. The protan palette keeps the same dark, transparent chassis but:
+    - shifts `red` toward a bright pink-magenta so errors carry blue-channel signal and don't sink into the background,
+    - leans `green` cool (toward cyan) so success doesn't merge with warnings,
+    - uses a high-luminance pure `yellow` for warnings,
+    - leaves `blue`, `cyan`, `purple`, and `magenta` close to canonical — the S cone is unaffected, so these anchor most semantic roles.
+
+If you want to fine-tune the chosen variant further, pair `variant` with `colors = { ... }` overrides:
+
+```lua
+require("vividphantom").setup({
+    variant = "protan",
+    colors = { red = "#ff5e80" },  -- nudge the error hue
+})
+```
+
 ## Configuration
 
 All options with their defaults:
 
 ```lua
 require("vividphantom").setup({
+    variant = "tritan",         -- "tritan" | "protan"
     transparent = true,         -- Normal/NormalFloat use bg=NONE
     italic_comments = true,
     hide_fillchars = true,      -- hide split / end-of-buffer fillchars
@@ -284,3 +330,7 @@ require("vividphantom").setup({ italic_comments = false })
 ## Credits
 
 - [cyberdream.nvim](https://github.com/scottmckendry/cyberdream.nvim) — the original aesthetic and modular architecture this fork inherits from.
+
+## License
+
+MIT. See [LICENSE](LICENSE). The file preserves the upstream cyberdream.nvim copyright alongside this fork's.

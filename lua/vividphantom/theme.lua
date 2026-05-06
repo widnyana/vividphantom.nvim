@@ -3,12 +3,24 @@ local util = require("vividphantom.util")
 
 local M = {}
 
+local PALETTES = {
+    tritan = colors.tritan,
+    protan = colors.protan,
+}
+
 function M.setup()
     local config = require("vividphantom.config")
     local opts = config.options
 
+    local variant = opts.variant or "tritan"
+    local palette = PALETTES[variant]
+    if not palette then
+        util.log("warn", ("unknown variant '%s', falling back to 'tritan'"):format(tostring(variant)))
+        palette = PALETTES.tritan
+    end
+
     ---@type vividphantom.Palette
-    local t = vim.deepcopy(colors.default)
+    local t = vim.deepcopy(palette)
 
     -- Apply user color overrides
     local color_overrides = opts.colors or {}

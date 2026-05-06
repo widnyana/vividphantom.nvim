@@ -34,8 +34,10 @@ local M = {}
 ---@field whichkey? boolean
 
 ---@alias vividphantom.LogLevel "off" | "error" | "warn" | "info" | "debug" | "trace"
+---@alias vividphantom.Variant "tritan" | "protan"
 
 ---@class vividphantom.Config
+---@field variant? vividphantom.Variant
 ---@field transparent? boolean
 ---@field italic_comments? boolean
 ---@field hide_fillchars? boolean
@@ -47,6 +49,7 @@ local M = {}
 ---@field overrides? vividphantom.OverrideFn
 ---@field extensions? vividphantom.Extensions
 local default_options = {
+    variant = "tritan",
     transparent = true,
     italic_comments = true,
     hide_fillchars = true,
