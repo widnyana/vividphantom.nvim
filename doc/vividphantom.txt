@@ -201,6 +201,7 @@ All options with their defaults: >lua
         hide_fillchars = true,      -- hide split / end-of-buffer fillchars
         terminal_colors = true,     -- populate vim.g.terminal_color_*
         borderless_pickers = true,  -- pickers blend into bg_alt
+        diff_emphasis = "subtle",   -- "subtle" | "high"
         log_level = "warn",
         colors = {},                -- palette overrides
         highlights = {},            -- highlight overrides (table or fn)
@@ -242,6 +243,16 @@ Solid (non-transparent) background: >lua
 
 Non-italic comments: >lua
     require("vividphantom").setup({ italic_comments = false })
+<
+
+Stronger diff tints (recommended for protan readers) — switches the
+diff-bg blend ratio from 80/20 to 70/30 so DiffAdd/Change/Delete/Text
+and the matching MiniDiffOver* groups remain distinct under CVD
+simulation: >lua
+    require("vividphantom").setup({
+        variant = "protan",
+        diff_emphasis = "high",
+    })
 <
 
 Cherry-pick extensions — disable everything, then re-enable: >lua

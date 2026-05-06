@@ -161,6 +161,7 @@ require("vividphantom").setup({
     hide_fillchars = true,      -- hide split / end-of-buffer fillchars
     terminal_colors = true,     -- populate vim.g.terminal_color_*
     borderless_pickers = true,  -- telescope/snacks pickers blend into bg_alt
+    diff_emphasis = "subtle",   -- "subtle" | "high" — stronger tint for diff bg
     log_level = "warn",         -- "off" | "error" | "warn" | "info" | "debug" | "trace"
     colors = {},                -- palette overrides
     highlights = {},            -- highlight overrides (table or function(palette))
@@ -199,6 +200,24 @@ require("vividphantom").setup({ transparent = false })
 ```lua
 require("vividphantom").setup({ italic_comments = false })
 ```
+
+### Stronger diff tints (recommended for protan readers)
+
+The default `diff_emphasis = "subtle"` blends each diff color at 80/20 with
+the real background, matching the original aesthetic. Under protan
+simulation those tints lose saturation; if `git diff` add/remove blocks
+feel mushy, switch to `"high"` (70/30 blend):
+
+```lua
+require("vividphantom").setup({
+    variant = "protan",
+    diff_emphasis = "high",
+})
+```
+
+Affects `DiffAdd`, `DiffChange`, `DiffDelete`, `DiffText`, and the
+matching `MiniDiffOver*` groups. Tritan readers can opt in too — purely
+aesthetic for them.
 
 ### Cherry-pick extensions
 
