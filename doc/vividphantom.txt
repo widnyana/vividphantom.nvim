@@ -1,0 +1,374 @@
+*vividphantom.txt*  CVD-aware Neovim colorscheme based on cyberdream.nvim
+
+Author:   widnyana <wid@widnyana.web.id>
+Homepage: https://github.com/widnyana/vividphantom.nvim
+License:  see repository
+
+==============================================================================
+CONTENTS                                              *vividphantom-contents*
+
+  1. Introduction ......................... |vividphantom-introduction|
+  2. Requirements ......................... |vividphantom-requirements|
+  3. Installation ......................... |vividphantom-installation|
+  4. Usage ................................ |vividphantom-usage|
+  5. Variants ............................. |vividphantom-variants|
+  6. Configuration ........................ |vividphantom-configuration|
+  7. Recipes .............................. |vividphantom-recipes|
+  8. Highlight overrides .................. |vividphantom-overrides|
+  9. vim.g.vividphantom_opts .............. |vividphantom-vim-g|
+ 10. Logging .............................. |vividphantom-logging|
+ 11. Supported plugins .................... |vividphantom-plugins|
+ 12. Troubleshooting ...................... |vividphantom-troubleshooting|
+ 13. Credits .............................. |vividphantom-credits|
+
+==============================================================================
+1. INTRODUCTION                                   *vividphantom-introduction*
+
+vividphantom is a Neovim colorscheme based on cyberdream.nvim, palette-tuned
+for color vision deficiency (CVD). Two palettes ship out of the box:
+
+  - "tritan" (default) — for tritanopia / tritanomaly (blue-yellow CVD)
+  - "protan"           — for protanopia / protanomaly (red-green CVD)
+
+Both share the same dark, transparent-by-default chassis and the same
+extension support; only the palette differs. See |vividphantom-variants|.
+
+==============================================================================
+2. REQUIREMENTS                                   *vividphantom-requirements*
+
+  - Neovim 0.9 or newer
+  - A terminal with `termguicolors` support
+
+==============================================================================
+3. INSTALLATION                                   *vividphantom-installation*
+
+With lazy.nvim:
+>lua
+    {
+        "widnyana/vividphantom.nvim",
+        lazy = false,
+        priority = 1000,
+        config = function()
+            require("vividphantom").setup({})
+            vim.cmd.colorscheme("vividphantom")
+        end,
+    }
+<
+
+With packer.nvim:
+>lua
+    use({
+        "widnyana/vividphantom.nvim",
+        config = function()
+            require("vividphantom").setup({})
+            vim.cmd.colorscheme("vividphantom")
+        end,
+    })
+<
+
+With vim-plug:
+>vim
+    Plug 'widnyana/vividphantom.nvim'
+<
+
+LazyVim:
+>lua
+    return {
+        {
+            "LazyVim/LazyVim",
+            opts = { colorscheme = "vividphantom" },
+        },
+        {
+            "widnyana/vividphantom.nvim",
+            lazy = false,
+            priority = 1000,
+            config = function()
+                require("vividphantom").setup({})
+                vim.cmd.colorscheme("vividphantom")
+            end,
+        },
+    }
+<
+
+==============================================================================
+4. USAGE                                                 *vividphantom-usage*
+
+After installation: >vim
+    :colorscheme vividphantom
+<
+
+Defaults are reasonable; everything in |vividphantom-configuration| is
+optional.
+
+==============================================================================
+5. VARIANTS                                           *vividphantom-variants*
+                                                       *vividphantom-variant*
+
+The `variant` option selects which palette is loaded:
+
+  Variant   Tuned for                                       Default
+  --------  ----------------------------------------------  -------
+  tritan    tritanopia / tritanomaly (blue-yellow CVD)      yes
+  protan    protanopia / protanomaly  (red-green CVD)       no
+
+Pick a variant via setup(): >lua
+    require("vividphantom").setup({ variant = "protan" })
+<
+
+Or via |vim.g.vividphantom_opts|: >lua
+    vim.g.vividphantom_opts = { variant = "protan" }
+<
+
+If `variant` is set to a value other than "tritan" or "protan", the loader
+emits a warn-level message (subject to |vividphantom-logging|) and falls
+back to "tritan" without raising an error.
+
+WHY TWO VARIANTS                                  *vividphantom-variants-why*
+
+Different CVD types collapse different axes of color perception:
+
+  - Tritan types lose the BLUE-YELLOW axis. The default palette compensates
+    by leaning on red, green, magenta, cyan, and pink as discriminators.
+
+  - Protan types lose the RED-GREEN axis (weak L cones). Pure dark red can
+    appear near-black, and red / orange / yellow / green collapse together.
+    The protan palette keeps the same dark, transparent chassis but:
+
+      * shifts `red` toward bright pink-magenta so errors carry blue-channel
+        signal and stay visible;
+      * leans `green` cool (toward cyan) so success doesn't merge with
+        warnings;
+      * uses a high-luminance pure `yellow`;
+      * keeps `blue`, `cyan`, `purple`, `magenta` close to canonical — the
+        S cone is unaffected, so they anchor most semantic roles.
+
+==============================================================================
+6. CONFIGURATION                                 *vividphantom-configuration*
+                                                       *vividphantom-options*
+                                                         *vividphantom-setup*
+
+All options with their defaults: >lua
+    require("vividphantom").setup({
+        variant = "tritan",         -- "tritan" | "protan"
+        transparent = true,         -- Normal/NormalFloat use bg=NONE
+        italic_comments = true,
+        hide_fillchars = true,      -- hide split / end-of-buffer fillchars
+        terminal_colors = true,     -- populate vim.g.terminal_color_*
+        borderless_pickers = true,  -- pickers blend into bg_alt
+        log_level = "warn",
+        colors = {},                -- palette overrides
+        highlights = {},            -- highlight overrides (table or fn)
+        overrides = nil,            -- alias for highlights when used as fn
+        extensions = {
+            blinkcmp = true,
+            cmp = true,
+            gitsigns = true,
+            indentblankline = true,
+            lazy = true,
+            markdown = true,        -- render-markdown.nvim
+            mini = true,
+            noice = true,
+            notify = true,
+            rainbow_delimiters = true,
+            snacks = true,
+            telescope = true,
+            treesitter = true,
+            treesittercontext = true,
+            trouble = true,
+            whichkey = true,
+        },
+    })
+<
+
+Resolution order when both setup() and |vim.g.vividphantom_opts| are used
+(last wins):
+
+  1. defaults
+  2. `vim.g.vividphantom_opts`
+  3. arguments passed to `setup({...})`
+
+==============================================================================
+7. RECIPES                                             *vividphantom-recipes*
+
+Solid (non-transparent) background: >lua
+    require("vividphantom").setup({ transparent = false })
+<
+
+Non-italic comments: >lua
+    require("vividphantom").setup({ italic_comments = false })
+<
+
+Cherry-pick extensions — disable everything, then re-enable: >lua
+    require("vividphantom").setup({
+        extensions = {
+            default = false,
+            treesitter = true,
+            gitsigns = true,
+            snacks = true,
+        },
+    })
+<
+
+Override colors in the active palette: >lua
+    require("vividphantom").setup({
+        colors = {
+            red = "#ff5050",
+            cyan = "#7ee8e8",
+        },
+    })
+<
+
+Use the protan variant, then nudge a single hue: >lua
+    require("vividphantom").setup({
+        variant = "protan",
+        colors = { red = "#ff5e80" },
+    })
+<
+
+==============================================================================
+8. HIGHLIGHT OVERRIDES                                *vividphantom-overrides*
+
+As a flat table: >lua
+    require("vividphantom").setup({
+        highlights = {
+            Comment = { fg = "#777777", italic = false },
+            ["@variable"] = { bold = true },
+        },
+    })
+<
+
+As a function (gives access to the resolved palette): >lua
+    require("vividphantom").setup({
+        overrides = function(t)
+            return {
+                Comment = { fg = t.cyan, italic = true },
+                CursorLine = { bg = t.bg_highlight },
+                DiagnosticError = { fg = t.red, bold = true },
+            }
+        end,
+    })
+<
+
+The palette argument `t` exposes:
+
+    bg, bg_alt, bg_highlight, bg_solid, fg, grey,
+    blue, green, cyan, red, yellow, magenta, pink, orange, purple
+
+`bg_solid` is the real background even when `transparent = true` is in
+effect — use it as a foreground when you need dark-on-color contrast that
+survives transparency.
+
+==============================================================================
+9. VIM.G.VIVIDPHANTOM_OPTS                                *vividphantom-vim-g*
+                                                  *vim.g.vividphantom_opts*
+                                                  *g:vividphantom_opts*
+
+Calling setup() is optional. Anything assigned to |vim.g.vividphantom_opts|
+is treated as configuration input: >lua
+    vim.g.vividphantom_opts = {
+        variant = "protan",
+        transparent = false,
+    }
+    vim.cmd.colorscheme("vividphantom")
+<
+
+After each setup() call, the merged user-layer (without defaults) is written
+back to |vim.g.vividphantom_opts|, so subsequent reads and `:colorscheme`
+reloads see a stable view of intent. Mutating |vim.g.vividphantom_opts|
+between reloads is honored on the next `:colorscheme vividphantom`.
+
+==============================================================================
+10. LOGGING                                            *vividphantom-logging*
+                                                     *vividphantom-log_level*
+
+Diagnostics emitted by the colorscheme (e.g. an enabled extension that
+fails to load) are routed through a level filter set by `log_level`:
+
+  Level    Emits                                                 Default
+  -------  ----------------------------------------------------  -------
+  off      nothing                                               no
+  error    errors only                                           no
+  warn     warnings + errors                                     yes
+  info     info + warn + error                                   no
+  debug    debug + above                                         no
+  trace    everything                                            no
+
+Examples: >lua
+    require("vividphantom").setup({ log_level = "off" })
+    require("vividphantom").setup({ log_level = "info" })
+<
+
+Misspelled or third-party extension keys (`extensions = { foo = true }`)
+will surface as a warn-level notification at the default level.
+
+==============================================================================
+11. SUPPORTED PLUGINS                                  *vividphantom-plugins*
+                                                  *vividphantom-extensions*
+
+Highlights are tuned for these plugins. Each can be toggled via the
+`extensions` table (see |vividphantom-configuration|).
+
+  Plugin                              Extension key
+  ---------------------------------   -----------------------
+  Treesitter                          `treesitter`
+  Treesitter Context                  `treesittercontext`
+  Telescope                           `telescope`
+  nvim-cmp                            `cmp`
+  blink.cmp                           `blinkcmp`
+  Gitsigns                            `gitsigns`
+  Lazy                                `lazy`
+  Noice                               `noice`
+  nvim-notify                         `notify`
+  Snacks (picker, dashboard, ...)     `snacks`
+  WhichKey                            `whichkey`
+  Trouble                             `trouble`
+  IndentBlankline                     `indentblankline`
+  Rainbow Delimiters                  `rainbow_delimiters`
+  mini.nvim suite                     `mini`
+  render-markdown.nvim                `markdown`
+
+Core LSP and diagnostic highlight groups plus standard Vim syntax are
+always tuned and cannot be disabled via the `extensions` table.
+
+==============================================================================
+12. TROUBLESHOOTING                            *vividphantom-troubleshooting*
+
+`:colorscheme vividphantom` is silently a no-op ~
+
+Check for stray files in your `colors/` directory: >sh
+    ls ~/.config/nvim/colors/
+<
+Any `vividphantom.lua.bak`, `vividphantom.lua.old`, or sibling file with
+"vividphantom" in the name (regardless of extension) can confuse Neovim's
+colorscheme resolver. Move it out of `colors/`. The `:colorscheme` call
+then returns success silently with `g:colors_name` left unset.
+
+Search / IncSearch text is unreadable ~
+
+You're on a stale revision. Update — recent versions anchor the foreground
+on `bg_solid` so search highlights stay legible in transparent mode.
+
+Pickers are fully transparent ~
+
+That's the default with `transparent = true`. Either flip transparency off
+or disable the picker integration: >lua
+    require("vividphantom").setup({ borderless_pickers = false })
+<
+
+Comments aren't italic ~
+
+Your terminal or font may not render italic. Try a font with italic glyphs
+(JetBrainsMono, Cascadia Code, Iosevka), or disable explicitly: >lua
+    require("vividphantom").setup({ italic_comments = false })
+<
+
+==============================================================================
+13. CREDITS                                            *vividphantom-credits*
+                                                       *vividphantom-links*
+
+  - cyberdream.nvim by Scott McKendry — the original aesthetic and the
+    modular architecture this fork inherits from:
+        https://github.com/scottmckendry/cyberdream.nvim
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:noet:
