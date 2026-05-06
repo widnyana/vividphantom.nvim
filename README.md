@@ -1,19 +1,22 @@
 # vividphantom.nvim
 
-Tritanopia-safe Neovim colorscheme. Based on [cyberdream.nvim](https://github.com/scottmckendry/cyberdream.nvim) by [Scott McKendry](https://github.com/scottmckendry), with the palette daltonized for blue-yellow (tritanopia) color vision deficiency.
+A dark Neovim colorscheme that stays readable when you're color blind. Based on [cyberdream.nvim](https://github.com/scottmckendry/cyberdream.nvim).
 
-The original cyberdream palette leans heavily on yellow/blue contrast, which collapses for people with tritanopia. vividphantom keeps the same dark, transparent aesthetic but swaps the discriminator pairs over to red/green/magenta/cyan so syntax categories stay visually distinct.
+It ships with two color sets:
 
-A second palette is available for **protanopia / protanomaly** (red-green CVD, weak L cones) via `variant = "protan"`. See [Variants](#variants) below.
+- **`tritan`** *(default)* — for people who have trouble telling **blue from yellow**.
+- **`protan`** — for people who have trouble telling **red from green**.
 
-## Requirements
+Both look the same overall — same dark, see-through-by-default style as cyberdream. Only the specific colors differ, picked so the things that need to look different (errors vs warnings, added vs deleted lines, types vs keywords, etc.) actually do.
 
-- Neovim 0.9+
-- A terminal with `termguicolors` support
+## What you need
+
+- Neovim 0.9 or newer
+- A terminal with true colors (`termguicolors`)
 
 ## Install
 
-[lazy.nvim](https://github.com/folke/lazy.nvim):
+**[lazy.nvim](https://github.com/folke/lazy.nvim)**
 
 ```lua
 {
@@ -27,7 +30,7 @@ A second palette is available for **protanopia / protanomaly** (red-green CVD, w
 }
 ```
 
-[packer.nvim](https://github.com/wbthomason/packer.nvim):
+**[packer.nvim](https://github.com/wbthomason/packer.nvim)**
 
 ```lua
 use({
@@ -39,28 +42,19 @@ use({
 })
 ```
 
-[vim-plug](https://github.com/junegunn/vim-plug):
+**vim-plug**
 
 ```vim
 Plug 'widnyana/vividphantom.nvim'
 ```
 
-Then in your Lua config:
+Then in your Lua config: `vim.cmd.colorscheme("vividphantom")`.
 
-```lua
-vim.cmd.colorscheme("vividphantom")
-```
-
-### LazyVim
-
-If you use LazyVim, set the colorscheme via its `opts.colorscheme` and let your plugin spec self-apply:
+**LazyVim** — set the colorscheme via LazyVim's option and let the plugin spec do the wiring:
 
 ```lua
 return {
-    {
-        "LazyVim/LazyVim",
-        opts = { colorscheme = "vividphantom" },
-    },
+    { "LazyVim/LazyVim", opts = { colorscheme = "vividphantom" } },
     {
         "widnyana/vividphantom.nvim",
         lazy = false,
@@ -73,155 +67,100 @@ return {
 }
 ```
 
-## Quick start
+## Try it
 
 ```vim
 :colorscheme vividphantom
 ```
 
-That's the whole minimum. Defaults are tuned to be reasonable; everything below is optional.
+That's the minimum. Everything below is optional.
 
-## Variants
+## Pick a variant
 
-vividphantom ships with two palettes, each tuned for a different color-vision profile:
+Pick whichever matches the trouble you actually have day-to-day, not what a clinic label says.
 
-| variant   | tuned for                                       | default? |
-|-----------|-------------------------------------------------|:--------:|
-| `tritan`  | tritanopia / tritanomaly *(blue-yellow CVD)*    | yes      |
-| `protan`  | protanopia / protanomaly *(red-green CVD)*      |          |
+| If this sounds familiar…                                                            | Use     |
+|--------------------------------------------------------------------------------------|---------|
+| Reds look near-black; you mix red with green or orange; `git diff` rows feel mushy | `protan` |
+| Yellows and blues bleed together; cyan and green look the same                      | `tritan` |
+| Not sure                                                                             | Try both — see [Preview](#preview) |
 
-Pick one with the `variant` option:
+Switch with:
 
 ```lua
 require("vividphantom").setup({ variant = "protan" })
 ```
 
-Or via `vim.g.vividphantom_opts`:
+## Options
 
-```lua
-vim.g.vividphantom_opts = { variant = "protan" }
-```
-
-Both variants share the same structural settings (transparency, italic comments, extension toggles, etc.) — only the palette differs.
-
-### Which one should I pick?
-
-Use the symptom that bites you in day-to-day editing — not a clinical label.
-
-- Pick **`protan`** if reds and dark reds look near-black, if `git diff` add/remove lines feel mushy, if you confuse red with green or orange, or if an eye exam has flagged red-green deficiency.
-- Pick **`tritan`** if yellows and blues bleed into each other, if you have trouble telling cyan from green, or an exam has flagged blue-yellow deficiency.
-- If you don't know, try both — `:VividphantomDemo` (see [Preview the palette](#preview-the-palette)) renders every semantic role in one buffer. Keep the variant where errors, warnings, and success/diff-add are easiest to tell apart at a glance.
-- Neither variant directly targets deuteranopia (the most common red-green CVD); `protan` is a reasonable starting point but hasn't been validated against a deutan simulator. If specific groups collide for you, override them via `colors = { ... }`.
-
-### Why two?
-
-Different CVD types collapse different axes of color perception, so a single palette can't cover both well.
-
-- **Tritan** types lose the **blue–yellow** axis. The default palette compensates by leaning on red, green, magenta, cyan, and pink as the primary discriminators.
-- **Protan** types lose the **red–green** axis (weak L cones). Dark red can appear near-black, and red/orange/yellow/green collapse together. The protan palette keeps the same dark, transparent chassis but:
-    - shifts `red` toward a bright pink-magenta so errors carry blue-channel signal and don't sink into the background,
-    - leans `green` cool (toward cyan) so success doesn't merge with warnings,
-    - uses a high-luminance pure `yellow` for warnings,
-    - leaves `blue`, `cyan`, `purple`, and `magenta` close to canonical — the S cone is unaffected, so these anchor most semantic roles.
-
-If you want to fine-tune the chosen variant further, pair `variant` with `colors = { ... }` overrides:
+Everything you can pass to `setup()`, with defaults:
 
 ```lua
 require("vividphantom").setup({
-    variant = "protan",
-    colors = { red = "#ff5e80" },  -- nudge the error hue
-})
-```
+    variant            = "tritan",   -- "tritan" | "protan"
+    transparent        = true,       -- see-through background
+    italic_comments    = true,       -- italics on comments
+    hide_fillchars     = true,       -- hide ~ end-of-buffer + split borders
+    terminal_colors    = true,       -- wire the 16 ANSI colors for :terminal
+    borderless_pickers = true,       -- blend Telescope/Snacks pickers into one bg
+    diff_emphasis      = "subtle",   -- "subtle" | "high" — diff line tint strength
+    log_level          = "warn",     -- "off"|"error"|"warn"|"info"|"debug"|"trace"
 
-## Preview the palette
+    colors     = {},                 -- override individual palette colors
+    highlights = {},                 -- override specific highlight groups
+    overrides  = nil,                -- same as `highlights`, but as a function
 
-Once a variant is active, open the demo buffer to see every semantic role at a glance:
-
-```vim
-:VividphantomDemo
-```
-
-Or from Lua:
-
-```lua
-require("vividphantom").demo()
-```
-
-The buffer renders palette swatches, diagnostic groups (error/warn/info/hint), diff and gitsigns groups, common syntax categories, and UI groups (search, visual, pmenu) — each labelled by its highlight group name. Useful for screenshotting and feeding into a CVD simulator (Color Oracle, Sim Daltonism, [coblis](https://www.color-blindness.com/coblis-color-blindness-simulator/)) to verify the palette holds under your specific deficiency before relying on it for daily work.
-
-## Configuration
-
-All options with their defaults:
-
-```lua
-require("vividphantom").setup({
-    variant = "tritan",         -- "tritan" | "protan"
-    transparent = true,         -- Normal/NormalFloat use bg=NONE
-    italic_comments = true,
-    hide_fillchars = true,      -- hide split / end-of-buffer fillchars
-    terminal_colors = true,     -- populate vim.g.terminal_color_*
-    borderless_pickers = true,  -- telescope/snacks pickers blend into bg_alt
-    diff_emphasis = "subtle",   -- "subtle" | "high" — stronger tint for diff bg
-    log_level = "warn",         -- "off" | "error" | "warn" | "info" | "debug" | "trace"
-    colors = {},                -- palette overrides
-    highlights = {},            -- highlight overrides (table or function(palette))
-    overrides = nil,            -- alias for `highlights` when used as a function
-    extensions = {
-        blinkcmp = true,
-        cmp = true,
-        gitsigns = true,
-        indentblankline = true,
-        lazy = true,
-        markdown = true,        -- render-markdown.nvim
-        mini = true,
-        noice = true,
-        notify = true,
-        rainbow_delimiters = true,
-        snacks = true,
-        telescope = true,
-        treesitter = true,
-        treesittercontext = true,
-        trouble = true,
-        whichkey = true,
+    extensions = {                   -- per-plugin styling — all on by default
+        blinkcmp = true, cmp = true, gitsigns = true, indentblankline = true,
+        lazy = true, markdown = true, mini = true, noice = true,
+        notify = true, rainbow_delimiters = true, snacks = true,
+        telescope = true, treesitter = true, treesittercontext = true,
+        trouble = true, whichkey = true,
     },
 })
 ```
 
-## Recipes
+### What each option does
 
-### Solid (non-transparent) background
+| Option                | What it does                                                                                              |
+|-----------------------|------------------------------------------------------------------------------------------------------------|
+| `variant`             | Which color set to use. `"tritan"` or `"protan"`.                                                          |
+| `transparent`         | If `true`, the editor background is see-through (your terminal background shows through).                  |
+| `italic_comments`     | Italics on comments. Needs a font that has italic glyphs.                                                  |
+| `hide_fillchars`      | Hides the `~` markers at the end of a buffer and the characters in split borders.                          |
+| `terminal_colors`     | Sets the 16 ANSI colors `:terminal` uses to match the palette.                                             |
+| `borderless_pickers`  | Telescope and Snacks pickers blend into a single background instead of drawing visible borders.            |
+| `diff_emphasis`       | How strong the tint is on diff lines. `"subtle"` is the cyberdream look. `"high"` makes add/remove blocks pop more — recommended for `protan` if diffs feel washed out. |
+| `log_level`           | How much the plugin says when something looks wrong. `"warn"` is sensible. `"off"` silences it.            |
+| `colors`              | Replace specific palette colors. See [Tweak the colors](#tweak-the-colors).                                |
+| `highlights`          | Replace specific highlight groups by name (a table) or build them from the palette (a function).           |
+| `overrides`           | Function form of `highlights` — gives you the resolved palette as an argument.                             |
+| `extensions`          | Turn styling on or off per plugin. Add `default = false` to turn everything off then re-enable a few.       |
+
+## Common tweaks
+
+**Solid background instead of see-through**
 
 ```lua
 require("vividphantom").setup({ transparent = false })
 ```
 
-### Non-italic comments
+**No italic comments**
 
 ```lua
 require("vividphantom").setup({ italic_comments = false })
 ```
 
-### Stronger diff tints (recommended for protan readers)
-
-The default `diff_emphasis = "subtle"` blends each diff color at 80/20 with
-the real background, matching the original aesthetic. Under protan
-simulation those tints lose saturation; if `git diff` add/remove blocks
-feel mushy, switch to `"high"` (70/30 blend):
+**Stronger diff tints** *(handy for `protan` — `git diff` blocks pop more)*
 
 ```lua
 require("vividphantom").setup({
-    variant = "protan",
+    variant       = "protan",
     diff_emphasis = "high",
 })
 ```
 
-Affects `DiffAdd`, `DiffChange`, `DiffDelete`, `DiffText`, and the
-matching `MiniDiffOver*` groups. Tritan readers can opt in too — purely
-aesthetic for them.
-
-### Cherry-pick extensions
-
-Disable everything, then re-enable what you actually use:
+**Only style a few plugins** — turn everything off, re-enable what you use:
 
 ```lua
 require("vividphantom").setup({
@@ -234,37 +173,37 @@ require("vividphantom").setup({
 })
 ```
 
-### Override colors in the palette
+## Tweak the colors
+
+Replace one or more palette colors:
 
 ```lua
 require("vividphantom").setup({
     colors = {
-        red = "#ff5050",
+        red  = "#ff5050",
         cyan = "#7ee8e8",
     },
 })
 ```
 
-### Override specific highlight groups
-
-As a flat table:
+Replace specific highlight groups by name:
 
 ```lua
 require("vividphantom").setup({
     highlights = {
-        Comment = { fg = "#777777", italic = false },
+        Comment       = { fg = "#777777", italic = false },
         ["@variable"] = { bold = true },
     },
 })
 ```
 
-As a function (gives you access to the resolved palette):
+Or build them from the palette via a function:
 
 ```lua
 require("vividphantom").setup({
     overrides = function(t)
         return {
-            Comment = { fg = t.cyan, italic = true },
+            Comment    = { fg = t.cyan, italic = true },
             CursorLine = { bg = t.bg_highlight },
         }
     end,
@@ -272,100 +211,71 @@ require("vividphantom").setup({
 ```
 
 The palette `t` exposes:
-`bg`, `bg_alt`, `bg_highlight`, `bg_solid`, `fg`, `grey`,
-`blue`, `green`, `cyan`, `red`, `yellow`, `magenta`, `pink`, `orange`, `purple`.
 
-`bg_solid` is the real background even when `transparent = true` — use it as the foreground when you need dark-on-color contrast that survives transparency.
+`bg`, `bg_alt`, `bg_highlight`, `bg_solid`, `fg`, `grey`, `blue`, `green`, `cyan`, `red`, `yellow`, `magenta`, `pink`, `orange`, `purple`.
 
-### Configure via `vim.g.vividphantom_opts`
+> `bg_solid` is the real dark background even when `transparent = true`. Use it as a foreground when you need dark text on a colored background — that way it stays readable when the rest of the bg goes see-through.
 
-`setup()` is optional. Anything in `vim.g.vividphantom_opts` is treated as configuration input:
+## Configure without `setup()`
+
+If you'd rather set things in your config than call a function, put them in `vim.g.vividphantom_opts` before the colorscheme loads:
 
 ```lua
 vim.g.vividphantom_opts = {
+    variant     = "protan",
     transparent = false,
-    italic_comments = false,
 }
 vim.cmd.colorscheme("vividphantom")
 ```
 
-Resolution order (last wins): `defaults` → `vim.g.vividphantom_opts` → `setup({...})` argument.
+If you set both, `setup()` arguments win over `vim.g.vividphantom_opts`, which wins over defaults.
 
-After each `setup()` call, the merged user-layer (without defaults) is written back to `vim.g.vividphantom_opts`. Mutating it between `:colorscheme vividphantom` reloads is honored.
+## Preview
 
-### Adjust logging verbosity
+Open a scratch buffer that shows every color and group at once:
 
-Diagnostics (e.g. enabled extension that fails to load) are filtered through `log_level`:
-
-| level   | emits                          |
-|---------|--------------------------------|
-| `off`   | nothing                        |
-| `error` | errors only                    |
-| `warn`  | warnings + errors *(default)*  |
-| `info`  | info + warn + error            |
-| `debug` | debug and above                |
-| `trace` | everything                     |
-
-```lua
-require("vividphantom").setup({ log_level = "off" })   -- silence everything
-require("vividphantom").setup({ log_level = "info" })  -- see what the loader is doing
+```vim
+:VividphantomDemo
 ```
 
-## Supported plugins
+Useful for taking a screenshot and feeding it into a color-blindness simulator like [Color Oracle](https://colororacle.org/) or [coblis](https://www.color-blindness.com/coblis-color-blindness-simulator/) to check it actually holds up for you specifically.
 
-Highlights are tuned for:
+## Plugins this styles
 
-| plugin                    | extension key         |
-|---------------------------|-----------------------|
-| Treesitter                | `treesitter`          |
-| Treesitter Context        | `treesittercontext`   |
-| Telescope                 | `telescope`           |
-| nvim-cmp                  | `cmp`                 |
-| blink.cmp                 | `blinkcmp`            |
-| Gitsigns                  | `gitsigns`            |
-| Lazy                      | `lazy`                |
-| Noice                     | `noice`               |
-| nvim-notify               | `notify`              |
-| Snacks (picker, dashboard, notifier) | `snacks`   |
-| WhichKey                  | `whichkey`            |
-| Trouble                   | `trouble`             |
-| IndentBlankline           | `indentblankline`     |
-| Rainbow Delimiters        | `rainbow_delimiters`  |
-| mini.nvim suite           | `mini`                |
-| render-markdown.nvim      | `markdown`            |
+| Plugin                                  | Extension key         |
+|-----------------------------------------|-----------------------|
+| Treesitter                              | `treesitter`          |
+| Treesitter Context                      | `treesittercontext`   |
+| Telescope                               | `telescope`           |
+| nvim-cmp                                | `cmp`                 |
+| blink.cmp                               | `blinkcmp`            |
+| Gitsigns                                | `gitsigns`            |
+| Lazy                                    | `lazy`                |
+| Noice                                   | `noice`               |
+| nvim-notify                             | `notify`              |
+| Snacks (picker, dashboard, notifier)    | `snacks`              |
+| WhichKey                                | `whichkey`            |
+| Trouble                                 | `trouble`             |
+| IndentBlankline                         | `indentblankline`     |
+| Rainbow Delimiters                      | `rainbow_delimiters`  |
+| mini.nvim suite                         | `mini`                |
+| render-markdown.nvim                    | `markdown`            |
 
-Plus core LSP / diagnostic groups and standard Vim syntax — those are always on.
+LSP and diagnostic colors plus standard Vim syntax are always styled — those can't be turned off.
 
-## Troubleshooting
+## Something's off
 
-### `:colorscheme vividphantom` is silently a no-op
+**`:colorscheme vividphantom` does nothing.** Check `~/.config/nvim/colors/`. If there's an old `vividphantom.lua.bak` or any sibling file with "vividphantom" in the name, Neovim's loader can get confused even when the extension isn't `.lua`. Move it out.
 
-Check for stray files in `~/.config/nvim/colors/`:
+**Search highlights are unreadable.** You're on an old version. Update — recent ones keep the search text dark on the highlight bg even when transparency is on.
 
-```
-ls ~/.config/nvim/colors/
-```
-
-If you have a leftover `vividphantom.lua.bak`, `vividphantom.lua.old`, or any sibling
-file with `vividphantom` in the name, move it out. Neovim's colorscheme resolver can
-get confused by neighbours in `colors/` even when their extension isn't `.lua` or `.vim`,
-silently failing to source the right file (the call returns success with `g:colors_name` left unset).
-
-### Search / IncSearch text is unreadable
-
-You're on a stale revision. Update — recent versions anchor the foreground on `bg_solid` so search highlights stay legible in transparent mode.
-
-### Pickers are fully transparent
-
-That's the default with `transparent = true`. Either flip transparency off, or disable just the picker integration:
+**Pickers look fully transparent.** That's the default when `transparent = true`. Turn off transparency, or turn off picker styling specifically:
 
 ```lua
 require("vividphantom").setup({ borderless_pickers = false })
 ```
 
-### Comments aren't italic
-
-Your terminal or font may not render italic. Try a font with italic glyphs (e.g. JetBrainsMono, Cascadia Code, Iosevka), or disable explicitly:
+**Comments aren't italic.** Your terminal or font doesn't render italics. Try a font that ships italics (JetBrains Mono, Cascadia Code, Iosevka, Fira Code), or just turn italics off:
 
 ```lua
 require("vividphantom").setup({ italic_comments = false })
@@ -373,8 +283,8 @@ require("vividphantom").setup({ italic_comments = false })
 
 ## Credits
 
-- [cyberdream.nvim](https://github.com/scottmckendry/cyberdream.nvim) — the original aesthetic and modular architecture this fork inherits from.
+Based on [cyberdream.nvim](https://github.com/scottmckendry/cyberdream.nvim) by Scott McKendry. The look and the modular plugin layout come from there; this fork adjusts the palettes for color-blind readers.
 
 ## License
 
-MIT. See [LICENSE](LICENSE). The file preserves the upstream cyberdream.nvim copyright alongside this fork's.
+MIT. See [LICENSE](LICENSE).
