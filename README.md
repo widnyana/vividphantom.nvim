@@ -1,6 +1,6 @@
 # vividphantom.nvim
 
-Tritanopia-safe Neovim colorscheme. Cyberdream-inspired aesthetic with a daltonized palette tuned for blue-yellow color vision deficiency.
+Tritanopia-safe Neovim colorscheme. Based on [cyberdream.nvim](https://github.com/scottmckendry/cyberdream.nvim) by [Scott McKendry](https://github.com/scottmckendry), with the palette daltonized for blue-yellow (tritanopia) color vision deficiency.
 
 ## Requirements
 
@@ -187,3 +187,7 @@ vividphantom.nvim/
         ├── markdown.lua
         └── treesittercontext.lua
 ```
+
+## Credits
+
+This project is a fork of [cyberdream.nvim](https://github.com/scottmckendry/cyberdream.nvim) by [Scott McKendry](https://github.com/scottmckendry). The original palette, highlight structure, and extension system are derived from that work. vividphantom modifies the color choices to be distinguishable under tritanopia (blue-yellow color vision deficiency) while preserving the cyberdream aesthetic.
