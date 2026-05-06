@@ -67,7 +67,7 @@ function M.get(opts, t)
         Title = { fg = t.fg },
         Visual = { bg = t.bg_highlight },
         VisualNOS = { bg = t.bg_highlight },
-        WarningMsg = { fg = t.orange },
+        WarningMsg = { fg = t.yellow },
         Whitespace = { fg = t.bg_highlight },
         WildMenu = { fg = t.bg_solid, bg = t.blue },
 
