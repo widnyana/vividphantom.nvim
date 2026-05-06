@@ -35,6 +35,7 @@ local M = {}
 
 ---@alias vividphantom.LogLevel "off" | "error" | "warn" | "info" | "debug" | "trace"
 ---@alias vividphantom.Variant "tritan" | "protan"
+---@alias vividphantom.DiffEmphasis "subtle" | "high"
 
 ---@class vividphantom.Config
 ---@field variant? vividphantom.Variant
@@ -43,6 +44,7 @@ local M = {}
 ---@field hide_fillchars? boolean
 ---@field terminal_colors? boolean
 ---@field borderless_pickers? boolean
+---@field diff_emphasis? vividphantom.DiffEmphasis
 ---@field log_level? vividphantom.LogLevel
 ---@field colors? vividphantom.Palette
 ---@field highlights? table<string, vividphantom.Highlight> | vividphantom.OverrideFn
@@ -55,6 +57,7 @@ local default_options = {
     hide_fillchars = true,
     terminal_colors = true,
     borderless_pickers = true,
+    diff_emphasis = "subtle",
     log_level = "warn",
     ---@diagnostic disable-next-line: missing-fields
     colors = {},

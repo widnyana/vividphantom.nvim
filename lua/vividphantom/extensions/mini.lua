@@ -6,14 +6,15 @@ local M = {}
 --- @param t vividphantom.Palette
 function M.get(opts, t)
     opts = opts or {}
+    local diff_w = opts.diff_emphasis == "high" and 0.7 or 0.8
     return {
         MiniClueNextKey = { fg = t.green },
         MiniDepsChangeAdded = { fg = t.green },
         MiniDepsChangeRemoved = { fg = t.red },
-        MiniDiffOverAdd = { bg = util.blend(t.bg_solid, t.green, 0.8) },
-        MiniDiffOverChange = { bg = util.blend(t.bg_solid, t.blue, 0.8) },
-        MiniDiffOverContext = { bg = util.blend(t.bg_solid, t.orange, 0.8) },
-        MiniDiffOverDelete = { bg = util.blend(t.bg_solid, t.red, 0.8) },
+        MiniDiffOverAdd = { bg = util.blend(t.bg_solid, t.green, diff_w) },
+        MiniDiffOverChange = { bg = util.blend(t.bg_solid, t.blue, diff_w) },
+        MiniDiffOverContext = { bg = util.blend(t.bg_solid, t.orange, diff_w) },
+        MiniDiffOverDelete = { bg = util.blend(t.bg_solid, t.red, diff_w) },
         MiniDiffSignAdd = { fg = t.green },
         MiniDiffSignChange = { fg = t.orange },
         MiniDiffSignDelete = { fg = t.red },

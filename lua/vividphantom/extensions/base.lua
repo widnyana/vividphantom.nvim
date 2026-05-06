@@ -6,6 +6,10 @@ local M = {}
 --- @param t vividphantom.Palette
 function M.get(opts, t)
     opts = opts or {}
+    -- "subtle" (default) keeps the original 0.8 blend so tritan visuals are
+    -- unchanged. "high" drops to 0.7, useful when CVD-shifted hues lose tint
+    -- saturation under simulation (notably the protan palette in diff views).
+    local diff_w = opts.diff_emphasis == "high" and 0.7 or 0.8
     return {
         -- Base
         Comment = { fg = t.grey, italic = opts.italic_comments },
@@ -15,10 +19,10 @@ function M.get(opts, t)
         CursorColumn = { bg = t.bg_highlight },
         CursorLine = { bg = t.bg_highlight },
         Directory = { fg = t.blue },
-        DiffAdd = { bg = util.blend(t.bg_solid, t.green, 0.8) },
-        DiffChange = { bg = util.blend(t.bg_solid, t.blue, 0.8) },
-        DiffDelete = { bg = util.blend(t.bg_solid, t.red, 0.8) },
-        DiffText = { bg = util.blend(t.bg_solid, t.orange, 0.8) },
+        DiffAdd = { bg = util.blend(t.bg_solid, t.green, diff_w) },
+        DiffChange = { bg = util.blend(t.bg_solid, t.blue, diff_w) },
+        DiffDelete = { bg = util.blend(t.bg_solid, t.red, diff_w) },
+        DiffText = { bg = util.blend(t.bg_solid, t.orange, diff_w) },
         Added = { fg = t.green },
         Removed = { fg = t.red },
         EndOfBuffer = { fg = util.blend(t.bg_highlight, t.fg, 0.9) },
