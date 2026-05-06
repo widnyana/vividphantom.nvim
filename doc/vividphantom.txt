@@ -12,14 +12,15 @@ CONTENTS                                              *vividphantom-contents*
   3. Installation ......................... |vividphantom-installation|
   4. Usage ................................ |vividphantom-usage|
   5. Variants ............................. |vividphantom-variants|
-  6. Configuration ........................ |vividphantom-configuration|
-  7. Recipes .............................. |vividphantom-recipes|
-  8. Highlight overrides .................. |vividphantom-overrides|
-  9. vim.g.vividphantom_opts .............. |vividphantom-vim-g|
- 10. Logging .............................. |vividphantom-logging|
- 11. Supported plugins .................... |vividphantom-plugins|
- 12. Troubleshooting ...................... |vividphantom-troubleshooting|
- 13. Credits .............................. |vividphantom-credits|
+  6. Preview the palette .................. |vividphantom-demo|
+  7. Configuration ........................ |vividphantom-configuration|
+  8. Recipes .............................. |vividphantom-recipes|
+  9. Highlight overrides .................. |vividphantom-overrides|
+ 10. vim.g.vividphantom_opts .............. |vividphantom-vim-g|
+ 11. Logging .............................. |vividphantom-logging|
+ 12. Supported plugins .................... |vividphantom-plugins|
+ 13. Troubleshooting ...................... |vividphantom-troubleshooting|
+ 14. Credits .............................. |vividphantom-credits|
 
 ==============================================================================
 1. INTRODUCTION                                   *vividphantom-introduction*
@@ -123,6 +124,28 @@ If `variant` is set to a value other than "tritan" or "protan", the loader
 emits a warn-level message (subject to |vividphantom-logging|) and falls
 back to "tritan" without raising an error.
 
+WHICH VARIANT SHOULD I PICK?                  *vividphantom-variant-picker*
+
+Use the symptom that bites you in day-to-day editing — not a clinical
+label.
+
+  - Pick "protan" if reds and dark reds look near-black, if `git diff` add
+    and remove lines feel mushy, if you confuse red with green or orange,
+    or if an eye exam has flagged red-green deficiency.
+
+  - Pick "tritan" if yellows and blues bleed into each other, if you have
+    trouble telling cyan from green, or an eye exam has flagged blue-yellow
+    deficiency.
+
+  - If you don't know, try both — |VividphantomDemo| renders every semantic
+    role in one buffer. Keep the variant where errors, warnings, and
+    success / diff-add are easiest to tell apart at a glance.
+
+  - Neither variant directly targets deuteranopia (the most common red-green
+    CVD); "protan" is a reasonable starting point but has not been
+    validated against a deutan simulator. If specific groups collide for
+    you, override them via `colors = { ... }` (see |vividphantom-overrides|).
+
 WHY TWO VARIANTS                                  *vividphantom-variants-why*
 
 Different CVD types collapse different axes of color perception:
@@ -143,7 +166,30 @@ Different CVD types collapse different axes of color perception:
         S cone is unaffected, so they anchor most semantic roles.
 
 ==============================================================================
-6. CONFIGURATION                                 *vividphantom-configuration*
+6. PREVIEW THE PALETTE                                    *vividphantom-demo*
+                                                           *VividphantomDemo*
+
+Once a variant is active, open a scratch buffer that exercises every
+semantic role at a glance: >vim
+    :VividphantomDemo
+<
+
+Or from Lua: >lua
+    require("vividphantom").demo()
+<
+
+The buffer renders palette swatches, diagnostic groups (error / warn /
+info / hint), diff and gitsigns groups, common syntax categories, and UI
+groups (search, visual, pmenu) — each labelled by its highlight group name.
+Useful for screenshotting and feeding into a CVD simulator (Color Oracle,
+Sim Daltonism, coblis) to verify the chosen palette holds under your
+specific deficiency before relying on it for daily editing.
+
+The buffer is read-only and uses `bufhidden=wipe`; close it with `:q` or
+switch buffers and it disappears on its own.
+
+==============================================================================
+7. CONFIGURATION                                 *vividphantom-configuration*
                                                        *vividphantom-options*
                                                          *vividphantom-setup*
 
@@ -188,7 +234,7 @@ Resolution order when both setup() and |vim.g.vividphantom_opts| are used
   3. arguments passed to `setup({...})`
 
 ==============================================================================
-7. RECIPES                                             *vividphantom-recipes*
+8. RECIPES                                             *vividphantom-recipes*
 
 Solid (non-transparent) background: >lua
     require("vividphantom").setup({ transparent = false })
@@ -226,7 +272,7 @@ Use the protan variant, then nudge a single hue: >lua
 <
 
 ==============================================================================
-8. HIGHLIGHT OVERRIDES                                *vividphantom-overrides*
+9. HIGHLIGHT OVERRIDES                                *vividphantom-overrides*
 
 As a flat table: >lua
     require("vividphantom").setup({
@@ -259,7 +305,7 @@ effect — use it as a foreground when you need dark-on-color contrast that
 survives transparency.
 
 ==============================================================================
-9. VIM.G.VIVIDPHANTOM_OPTS                                *vividphantom-vim-g*
+10. VIM.G.VIVIDPHANTOM_OPTS                               *vividphantom-vim-g*
                                                   *vim.g.vividphantom_opts*
                                                   *g:vividphantom_opts*
 
@@ -278,7 +324,7 @@ reloads see a stable view of intent. Mutating |vim.g.vividphantom_opts|
 between reloads is honored on the next `:colorscheme vividphantom`.
 
 ==============================================================================
-10. LOGGING                                            *vividphantom-logging*
+11. LOGGING                                            *vividphantom-logging*
                                                      *vividphantom-log_level*
 
 Diagnostics emitted by the colorscheme (e.g. an enabled extension that
@@ -302,7 +348,7 @@ Misspelled or third-party extension keys (`extensions = { foo = true }`)
 will surface as a warn-level notification at the default level.
 
 ==============================================================================
-11. SUPPORTED PLUGINS                                  *vividphantom-plugins*
+12. SUPPORTED PLUGINS                                  *vividphantom-plugins*
                                                   *vividphantom-extensions*
 
 Highlights are tuned for these plugins. Each can be toggled via the
@@ -331,7 +377,7 @@ Core LSP and diagnostic highlight groups plus standard Vim syntax are
 always tuned and cannot be disabled via the `extensions` table.
 
 ==============================================================================
-12. TROUBLESHOOTING                            *vividphantom-troubleshooting*
+13. TROUBLESHOOTING                            *vividphantom-troubleshooting*
 
 `:colorscheme vividphantom` is silently a no-op ~
 
@@ -363,7 +409,7 @@ Your terminal or font may not render italic. Try a font with italic glyphs
 <
 
 ==============================================================================
-13. CREDITS                                            *vividphantom-credits*
+14. CREDITS                                            *vividphantom-credits*
                                                        *vividphantom-links*
 
   - cyberdream.nvim by Scott McKendry — the original aesthetic and the
