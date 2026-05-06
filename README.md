@@ -104,6 +104,15 @@ vim.g.vividphantom_opts = { variant = "protan" }
 
 Both variants share the same structural settings (transparency, italic comments, extension toggles, etc.) — only the palette differs.
 
+### Which one should I pick?
+
+Use the symptom that bites you in day-to-day editing — not a clinical label.
+
+- Pick **`protan`** if reds and dark reds look near-black, if `git diff` add/remove lines feel mushy, if you confuse red with green or orange, or if an eye exam has flagged red-green deficiency.
+- Pick **`tritan`** if yellows and blues bleed into each other, if you have trouble telling cyan from green, or an exam has flagged blue-yellow deficiency.
+- If you don't know, try both — `:VividphantomDemo` (see [Preview the palette](#preview-the-palette)) renders every semantic role in one buffer. Keep the variant where errors, warnings, and success/diff-add are easiest to tell apart at a glance.
+- Neither variant directly targets deuteranopia (the most common red-green CVD); `protan` is a reasonable starting point but hasn't been validated against a deutan simulator. If specific groups collide for you, override them via `colors = { ... }`.
+
 ### Why two?
 
 Different CVD types collapse different axes of color perception, so a single palette can't cover both well.
@@ -123,6 +132,22 @@ require("vividphantom").setup({
     colors = { red = "#ff5e80" },  -- nudge the error hue
 })
 ```
+
+## Preview the palette
+
+Once a variant is active, open the demo buffer to see every semantic role at a glance:
+
+```vim
+:VividphantomDemo
+```
+
+Or from Lua:
+
+```lua
+require("vividphantom").demo()
+```
+
+The buffer renders palette swatches, diagnostic groups (error/warn/info/hint), diff and gitsigns groups, common syntax categories, and UI groups (search, visual, pmenu) — each labelled by its highlight group name. Useful for screenshotting and feeding into a CVD simulator (Color Oracle, Sim Daltonism, [coblis](https://www.color-blindness.com/coblis-color-blindness-simulator/)) to verify the palette holds under your specific deficiency before relying on it for daily work.
 
 ## Configuration
 
