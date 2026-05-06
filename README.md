@@ -65,6 +65,7 @@ require("vividphantom").setup({
     hide_fillchars = true,      -- hide split/eob fillchars
     terminal_colors = true,     -- set vim.g.terminal_color_*
     borderless_pickers = true,  -- telescope/snacks pickers blend into bg_alt
+    log_level = "warn",         -- "off" | "error" | "warn" | "info" | "debug" | "trace"
     colors = {},                -- palette overrides, e.g. { red = "#ff0000" }
     highlights = {},            -- highlight overrides (table or function(palette))
     extensions = {
@@ -112,6 +113,48 @@ require("vividphantom").setup({
     end,
 })
 ```
+
+### Configuration via `vim.g.vividphantom_opts`
+
+`setup()` is optional. Any value set in `vim.g.vividphantom_opts` is treated as
+configuration input, and `:colorscheme vividphantom` will pick it up.
+
+```lua
+vim.g.vividphantom_opts = {
+    transparent = false,
+    log_level = "info",
+}
+vim.cmd.colorscheme("vividphantom")
+```
+
+Resolution order (last wins):
+
+1. defaults
+2. `vim.g.vividphantom_opts`
+3. arguments passed to `setup({...})`
+
+After each `setup()` call, the merged user-layer (without defaults) is written
+back to `vim.g.vividphantom_opts`, so subsequent reads and `:colorscheme`
+reloads see a consistent view of intent. Mutating `vim.g.vividphantom_opts`
+between reloads is honored on the next `:colorscheme vividphantom`.
+
+### Logging
+
+Extension load failures and similar diagnostics are routed through a level
+filter controlled by `log_level`. Levels follow `vim.log.levels`:
+
+| level   | emits                          |
+|---------|--------------------------------|
+| `off`   | nothing                        |
+| `error` | errors                         |
+| `warn`  | warnings + errors *(default)*  |
+| `info`  | info + warn + error            |
+| `debug` | debug and above                |
+| `trace` | everything                     |
+
+Misspelled or third-party extension keys (e.g. `extensions = { foo = true }`)
+will surface as a `warn` notification at the default level — set `log_level = "off"`
+to silence, or `"info"` to see what the loader is doing.
 
 ## Structure
 

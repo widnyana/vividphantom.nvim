@@ -2,15 +2,31 @@ local M = {}
 
 --- @alias RGB number[]
 
---- Notify the user with a message.
+--- Log levels by name → vim.log.levels numeric value.
+--- Higher number = more severe. "off" suppresses everything.
+local LOG_LEVELS = {
+    trace = vim.log.levels.TRACE,
+    debug = vim.log.levels.DEBUG,
+    info = vim.log.levels.INFO,
+    warn = vim.log.levels.WARN,
+    error = vim.log.levels.ERROR,
+    off = vim.log.levels.OFF,
+}
+
+--- Emit a log message at `level`. Filtered against `opts.log_level`
+--- (default "warn") so callers can stay loud or silent per user preference.
+--- @param level vividphantom.LogLevel
 --- @param message string
---- @param level? "info" | "warn" | "error"
---- @param title? string
-function M.notify(message, level, title)
-    level = level or "info"
-    title = title or "vividphantom.nvim"
-    local level_int = level == "info" and 2 or level == "warn" and 3 or 4
-    vim.notify(message, level_int, { title = title })
+function M.log(level, message)
+    local target = LOG_LEVELS[level] or LOG_LEVELS.info
+    local configured_name = (require("vividphantom.config").options or {}).log_level or "warn"
+    local threshold = LOG_LEVELS[configured_name] or LOG_LEVELS.warn
+
+    if target < threshold then
+        return
+    end
+
+    vim.notify(message, target, { title = "vividphantom.nvim" })
 end
 
 --- Apply a table of highlight groups.

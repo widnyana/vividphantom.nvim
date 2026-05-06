@@ -33,12 +33,15 @@ local M = {}
 ---@field trouble? boolean
 ---@field whichkey? boolean
 
+---@alias vividphantom.LogLevel "off" | "error" | "warn" | "info" | "debug" | "trace"
+
 ---@class vividphantom.Config
 ---@field transparent? boolean
 ---@field italic_comments? boolean
 ---@field hide_fillchars? boolean
 ---@field terminal_colors? boolean
 ---@field borderless_pickers? boolean
+---@field log_level? vividphantom.LogLevel
 ---@field colors? vividphantom.Palette
 ---@field highlights? table<string, vividphantom.Highlight> | vividphantom.OverrideFn
 ---@field overrides? vividphantom.OverrideFn
@@ -49,6 +52,7 @@ local default_options = {
     hide_fillchars = true,
     terminal_colors = true,
     borderless_pickers = true,
+    log_level = "warn",
     ---@diagnostic disable-next-line: missing-fields
     colors = {},
     highlights = {},
@@ -76,27 +80,52 @@ local default_options = {
 ---@type vividphantom.Config
 M.options = {}
 
----@param options vividphantom.Config|nil
+--- Expand `extensions.default = bool` into a full table of per-extension flags.
+--- @param extensions table|nil
+--- @return table|nil
+local function expand_extensions(extensions)
+    if not extensions or extensions.default == nil then
+        return extensions
+    end
+
+    local default_value = extensions.default
+    local user_extensions = vim.deepcopy(extensions)
+    user_extensions.default = nil
+
+    local out = {}
+    for k, _ in pairs(default_options.extensions) do
+        out[k] = default_value
+    end
+    for k, v in pairs(user_extensions) do
+        out[k] = v
+    end
+    return out
+end
+
+--- Configure the colorscheme.
+---
+--- Resolution order (last wins):
+---   1. defaults
+---   2. `vim.g.vividphantom_opts` (read every call, so runtime changes apply)
+---   3. `options` argument
+---
+--- The merged user-layer (without defaults) is written back to
+--- `vim.g.vividphantom_opts`, so subsequent `setup()` calls and `:colorscheme`
+--- reloads pick up a stable view of the user's intent.
+--- @param options vividphantom.Config|nil
 function M.setup(options)
     options = options or {}
 
-    if options.extensions and options.extensions.default ~= nil then
-        local default_value = options.extensions.default
-        local user_extensions = vim.deepcopy(options.extensions)
-        user_extensions.default = nil
-
-        local extensions = {}
-        for k, _ in pairs(default_options.extensions) do
-            extensions[k] = default_value
-        end
-        for k, v in pairs(user_extensions) do
-            extensions[k] = v
-        end
-        options.extensions = extensions
+    local g_opts = vim.g.vividphantom_opts
+    if type(g_opts) ~= "table" then
+        g_opts = {}
     end
 
-    M.options = vim.tbl_deep_extend("force", {}, default_options, options)
-    vim.g.vividphantom_opts = M.options
+    local user_layer = vim.tbl_deep_extend("force", {}, g_opts, options)
+    user_layer.extensions = expand_extensions(user_layer.extensions)
+
+    M.options = vim.tbl_deep_extend("force", {}, default_options, user_layer)
+    vim.g.vividphantom_opts = user_layer
 end
 
 M.setup()

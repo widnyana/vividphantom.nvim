@@ -1,4 +1,5 @@
 local colors = require("vividphantom.colors")
+local util = require("vividphantom.util")
 
 local M = {}
 
@@ -61,6 +62,11 @@ function M.setup()
             local ok, ext = pcall(require, "vividphantom.extensions." .. extension)
             if ok then
                 theme.highlights = vim.tbl_deep_extend("force", theme.highlights, ext.get(opts, t))
+            else
+                util.log(
+                    "warn",
+                    ("extension '%s' is enabled but failed to load: %s"):format(extension, tostring(ext))
+                )
             end
         end
     end
