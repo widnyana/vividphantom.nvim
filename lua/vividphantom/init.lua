@@ -14,4 +14,12 @@ end
 M.setup = config.setup
 M.colorscheme = M.load
 
+function M.demo()
+    require("vividphantom.demo").open()
+end
+
+vim.api.nvim_create_user_command("VividphantomDemo", function()
+    M.demo()
+end, { desc = "Open a vividphantom palette / highlight-group demo buffer", force = true })
+
 return M
