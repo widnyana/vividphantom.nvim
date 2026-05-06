@@ -63,7 +63,7 @@ M.protan = {
     magenta = "#ff5ef1",
     pink = "#ff8acc",
     orange = "#ff9e3d",
-    purple = "#c084fc",
+    purple = "#8b5cf6",
 }
 
 -- Back-compat alias. `colors.default` was the original public name before
