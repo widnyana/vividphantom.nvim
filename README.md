@@ -1,13 +1,13 @@
 # vividphantom.nvim
 
-A dark Neovim colorscheme that stays readable when you're color blind. Based on [cyberdream.nvim](https://github.com/scottmckendry/cyberdream.nvim).
+A dark Neovim colorscheme that stays readable with color vision deficiency. Based on [cyberdream.nvim](https://github.com/scottmckendry/cyberdream.nvim).
 
 It ships with two color sets:
 
-- **`tritan`** *(default)* — for people who have trouble telling **blue from yellow**.
-- **`protan`** — for people who have trouble telling **red from green**.
+- **`tritan`** *(default)* — for people who have difficulty distinguishing blue-yellow color differences.
+- **`protan`** — for people with reduced sensitivity to red light (a type of red-green color vision deficiency).
 
-Both look the same overall — same dark, see-through-by-default style as cyberdream. Only the specific colors differ, picked so the things that need to look different (errors vs warnings, added vs deleted lines, types vs keywords, etc.) actually do.
+Both look the same overall — dark background, see-through by default, like cyberdream. Only the specific colors differ, picked so the things that need to look different (errors vs warnings, added vs deleted lines, types vs keywords, etc.) actually do.
 
 ## What you need
 
@@ -50,7 +50,7 @@ Plug 'widnyana/vividphantom.nvim'
 
 Then in your Lua config: `vim.cmd.colorscheme("vividphantom")`.
 
-**LazyVim** — set the colorscheme via LazyVim's option and let the plugin spec do the wiring:
+**LazyVim** — set the colorscheme via LazyVim's option and let the plugin spec handle the setup:
 
 ```lua
 return {
@@ -77,12 +77,12 @@ That's the minimum. Everything below is optional.
 
 ## Pick a variant
 
-Pick whichever matches the trouble you actually have day-to-day, not what a clinic label says.
+Pick whichever matches the difficulty you actually have day-to-day, not what a clinic label says.
 
 | If this sounds familiar…                                                            | Use     |
 |--------------------------------------------------------------------------------------|---------|
-| Reds look near-black; you mix red with green or orange; `git diff` rows feel mushy | `protan` |
-| Yellows and blues bleed together; cyan and green look the same                      | `tritan` |
+| Reduced sensitivity to red light; reds look dim or near-black; red-green confusion    | `protan` |
+| Difficulty distinguishing blues from yellows; cyan and green can look the same        | `tritan` |
 | Not sure                                                                             | Try both — see [Preview](#preview) |
 
 Switch with:
@@ -101,7 +101,7 @@ require("vividphantom").setup({
     transparent        = true,       -- see-through background
     italic_comments    = true,       -- italics on comments
     hide_fillchars     = true,       -- hide ~ end-of-buffer + split borders
-    terminal_colors    = true,       -- wire the 16 ANSI colors for :terminal
+    terminal_colors    = true,       -- set the 16 terminal colors for :terminal
     borderless_pickers = true,       -- blend Telescope/Snacks pickers into one bg
     diff_emphasis      = "subtle",   -- "subtle" | "high" — diff line tint strength
     log_level          = "warn",     -- "off"|"error"|"warn"|"info"|"debug"|"trace"
@@ -126,7 +126,7 @@ require("vividphantom").setup({
 |-----------------------|------------------------------------------------------------------------------------------------------------|
 | `variant`             | Which color set to use. `"tritan"` or `"protan"`.                                                          |
 | `transparent`         | If `true`, the editor background is see-through (your terminal background shows through).                  |
-| `italic_comments`     | Italics on comments. Needs a font that has italic glyphs.                                                  |
+| `italic_comments`     | Italics on comments. Needs a font that supports italics.                                                   |
 | `hide_fillchars`      | Hides the `~` markers at the end of a buffer and the characters in split borders.                          |
 | `terminal_colors`     | Sets the 16 ANSI colors `:terminal` uses to match the palette.                                             |
 | `borderless_pickers`  | Telescope and Snacks pickers blend into a single background instead of drawing visible borders.            |
@@ -134,7 +134,7 @@ require("vividphantom").setup({
 | `log_level`           | How much the plugin says when something looks wrong. `"warn"` is sensible. `"off"` silences it.            |
 | `colors`              | Replace specific palette colors. See [Tweak the colors](#tweak-the-colors).                                |
 | `highlights`          | Replace specific highlight groups by name (a table) or build them from the palette (a function).           |
-| `overrides`           | Function form of `highlights` — gives you the resolved palette as an argument.                             |
+| `overrides`           | Function form of `highlights` — gives you the palette as an argument.                                     |
 | `extensions`          | Turn styling on or off per plugin. Add `default = false` to turn everything off then re-enable a few.       |
 
 ## Common tweaks
@@ -232,13 +232,13 @@ If you set both, `setup()` arguments win over `vim.g.vividphantom_opts`, which w
 
 ## Preview
 
-Open a scratch buffer that shows every color and group at once:
+Open a temporary buffer that shows every color and group at once:
 
 ```vim
 :VividphantomDemo
 ```
 
-Useful for taking a screenshot and feeding it into a color-blindness simulator like [Color Oracle](https://colororacle.org/) or [coblis](https://www.color-blindness.com/coblis-color-blindness-simulator/) to check it actually holds up for you specifically.
+Useful for taking a screenshot and feeding it into a color vision deficiency (CVD) simulator like [Color Oracle](https://colororacle.org/) or [coblis](https://www.color-blindness.com/coblis-color-blindness-simulator/) to check it actually holds up for you specifically.
 
 ## Plugins this styles
 
@@ -283,7 +283,7 @@ require("vividphantom").setup({ italic_comments = false })
 
 ## Credits
 
-Based on [cyberdream.nvim](https://github.com/scottmckendry/cyberdream.nvim) by Scott McKendry. The look and the modular plugin layout come from there; this fork adjusts the palettes for color-blind readers.
+Based on [cyberdream.nvim](https://github.com/scottmckendry/cyberdream.nvim) by Scott McKendry. The look and the plugin layout come from there; this fork adjusts the palettes for readers with color vision deficiency.
 
 ## License
 
