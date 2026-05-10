@@ -232,6 +232,10 @@ If you set both, `setup()` arguments win over `vim.g.vividphantom_opts`, which w
 
 ## Preview
 
+![screenshot](doc/vividphantom-0.png)
+
+![screenshot](doc/vividphantom-1.png)
+
 Open a temporary buffer that shows every color and group at once:
 
 ```vim
